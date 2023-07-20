@@ -5,10 +5,11 @@
  * @format
  */
 
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import axios from 'axios';
 import {
-  /*DdSdkReactNative,
-  DdSdkReactNativeConfiguration,*/
+  DdSdkReactNative,
+  /*DdSdkReactNativeConfiguration,*/
   DatadogProviderConfiguration,
   DatadogProvider,
 } from '@datadog/mobile-react-native';
@@ -21,6 +22,8 @@ import {
   Text,
   useColorScheme,
   View,
+  Button,
+  Image,
 } from 'react-native';
 
 import {
@@ -56,27 +59,25 @@ type SectionProps = PropsWithChildren<{
 
 function Section({children, title}: SectionProps): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
-  return ( 
-      <View style={styles.sectionContainer}>
-        <Text
-          style={[
-            styles.sectionTitle,
-            {
-              color: isDarkMode ? Colors.white : Colors.black,
-            },
-          ]}>
-          {title}
-        </Text>
-        <Text
-          style={[
-            styles.sectionDescription,
-            {
-              color: isDarkMode ? Colors.light : Colors.dark,
-            },
-          ]}>
-          {children}
-        </Text>
-      </View>
+  return (
+    <View>
+      <Text
+        style={[
+          {
+            color: isDarkMode ? Colors.white : Colors.black,
+          },
+        ]}>
+        {title}
+      </Text>
+      <Text
+        style={[
+          {
+            color: isDarkMode ? Colors.light : Colors.dark,
+          },
+        ]}>
+        {children}
+      </Text>
+    </View>
   );
 }
 
@@ -87,58 +88,111 @@ function App(): JSX.Element {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  var [userFirstName, setUserFirstname] = useState('');
+  var [userLastName, setUserLastName] = useState('');
+  var [pictureURL, setPictureURL] = useState(
+    'https://reactnative.dev/img/tiny_logo.png',
+  );
+  var [userEmail, setUserEmail] = useState('');
+  var [userId, setUserId] = useState('');
+
+  const changeUser = () => {
+    axios({
+      method: 'get',
+      url: 'https://randomuser.me/api/',
+    }).then(response => {
+      let userDataResults = response.data.results[0];
+      setUserFirstname(userFirstName => userDataResults.name.first);
+      setUserLastName(userLastname => userDataResults.name.last);
+      setPictureURL(pictureURL => userDataResults.picture.large);
+      setUserEmail(userEmail => userDataResults.email);
+      setUserId(userId => userDataResults.login.uuid);
+
+      DdSdkReactNative.setUser({
+        id: userDataResults.login.uuid,
+        name: userDataResults.name.first + " " + userDataResults.name.last,
+        email: userDataResults.email,
+        type: 'premium',
+      });
+    });
+  };
+
+  useEffect(() => {
+    changeUser();
+  }, []);
+
   return (
     <DatadogProvider configuration={config}>
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      <SafeAreaView style={backgroundStyle}>
+        <StatusBar
+          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+          backgroundColor={backgroundStyle.backgroundColor}
+        />
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          style={backgroundStyle}>
+          <View
+            style={{
+              backgroundColor: isDarkMode ? Colors.black : Colors.white,
+            }}>
+            <View style={{backgroundColor: '#642ba6'}}>
+              <Text style={styles.titleText}>
+                {'Welcome, ' + userFirstName + ' ' + userLastName + '!'}
+              </Text>
+              <Image
+                style={styles.logo}
+                source={{
+                  uri: pictureURL,
+                }}
+              />
+            </View>
+
+            <View style={styles.container}>
+              <View style={styles.buttonContainer}>
+                <Button title="🔄 Change User 🔄" onPress={changeUser} />
+              </View>
+              <View style={styles.buttonContainer}>
+                <Button title={'⏲️ Apply Custom Timing ⏲️'} />
+              </View>
+              <View style={styles.buttonContainer}>
+                <Button title={'💥 Crash App 💥'} />
+              </View>
+            </View>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     </DatadogProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
+  titleText: {
     fontSize: 24,
     fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+    color: 'white',
+    marginTop: 28,
+    marginBottom: 18,
+    paddingHorizontal: 24,
   },
   highlight: {
     fontWeight: '700',
+  },
+  logo: {
+    width: 150,
+    height: 150,
+    alignSelf: 'center',
+    marginBottom: 18,
+    borderRadius: 15,
+  },
+  button: {
+    marginBottom: 100,
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  buttonContainer: {
+    marginTop: 30,
   },
 });
 

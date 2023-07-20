@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@datadog/mobile-react-native": "^1.8.1",
+    "axios": "^1.4.0",
     "react": "18.2.0",
     "react-native": "0.72.3"
   },
