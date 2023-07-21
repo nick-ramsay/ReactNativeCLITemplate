@@ -16,6 +16,8 @@ import {
   RumActionType,
   DdRum,
 } from '@datadog/mobile-react-native';
+
+import { DdRumReactNavigationTracking, ViewNamePredicate } from '@datadog/mobile-react-navigation';
 import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
@@ -29,6 +31,9 @@ import {
   Image,
 } from 'react-native';
 
+import {NavigationContainer, Route} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+
 import {
   Colors,
   DebugInstructions,
@@ -36,13 +41,6 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-
-const datadogLogo = require('./images/dd_logo_v_white.png');
-
-const Stack = createNativeStackNavigator();
 
 //DD RUM Start
 
@@ -91,13 +89,7 @@ function Section({children, title}: SectionProps): JSX.Element {
   );
 }
 
-function HomeScreen() {
-  return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Home Screen</Text>
-    </View>
-  );
-}
+const Stack = createNativeStackNavigator();
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -148,13 +140,9 @@ function App(): JSX.Element {
     console.log(test.should.crash);
   };
 
-  useEffect(() => {
-    changeUser();
-  }, []);
-
-  return (
-    <DatadogProvider configuration={config}>
-      <NavigationContainer>
+  const HomeScreen = ({navigation}: {navigation: any}) => {
+    return (
+      <View>
         <SafeAreaView style={backgroundStyle}>
           <StatusBar
             barStyle={isDarkMode ? 'light-content' : 'dark-content'}
@@ -163,63 +151,109 @@ function App(): JSX.Element {
           <ScrollView
             contentInsetAdjustmentBehavior="automatic"
             style={backgroundStyle}>
-            <View
-              style={{
-                backgroundColor: isDarkMode ? Colors.black : Colors.white,
-              }}>
-              <View style={{backgroundColor: '#642ba6'}}>
-                <Text style={styles.titleText}>
-                  {userId !== ''
-                    ? 'Welcome, ' + userFirstName + ' ' + userLastName + '!'
-                    : ''}
-                </Text>
-                <Image
-                  style={styles.logo}
-                  source={
-                    pictureURL !== ''
-                      ? {uri: pictureURL}
-                      : require('./images/dd_logo_v_white.png')
-                  }
+            <View>
+              <Text style={styles.titleText}>
+                {userId !== ''
+                  ? 'Welcome, ' + userFirstName + ' ' + userLastName + '!'
+                  : ''}
+              </Text>
+              <Image
+                style={styles.logo}
+                source={
+                  pictureURL !== ''
+                    ? {uri: pictureURL}
+                    : require('./images/dd_logo_v_white.png')
+                }
+              />
+            </View>
+            <View style={styles.container}>
+              <View style={styles.buttonContainer}>
+                <Button
+                  color="#642ba6"
+                  title="Change User Image"
+                  onPress={changeUserImage}
                 />
               </View>
-
-              <View style={styles.container}>
-                <View style={styles.buttonContainer}>
-                  <Button
-                    color="#642ba6"
-                    title="Change User Image"
-                    onPress={changeUserImage}
-                  />
-                </View>
-                <View style={styles.buttonContainer}>
-                  <Button
-                    color="#642ba6"
-                    title={'Apply Custom Timing'}
-                    onPress={() =>
-                      DdRum.addTiming('customTimingBtn_load_timing')
-                    }
-                  />
-                </View>
-                <View style={styles.buttonContainer}>
-                  <Button
-                    color="#642ba6"
-                    title={'Crash App'}
-                    onPress={forceCrash}
-                  />
-                </View>
-                {/*
-                <View style={styles.buttonContainer}>
+              <View style={styles.buttonContainer}>
                 <Button
+                  color="#642ba6"
+                  title={'Apply Custom Timing'}
+                  onPress={() => DdRum.addTiming('customTimingBtn_load_timing')}
+                />
+              </View>
+              <View style={styles.buttonContainer}>
+                <Button
+                  color="#642ba6"
+                  title={'Crash App'}
+                  onPress={forceCrash}
+                />
+              </View>
+              {
+                <View style={styles.buttonContainer}>
+                  <Button
                     color="#642ba6"
                     title={'New Page/View'}
-                    //onPress={forceCrash}
+                    onPress={() => navigation.navigate(AlternateView, {})}
                   />
                 </View>
-                */}
-              </View>
+              }
             </View>
           </ScrollView>
         </SafeAreaView>
+      </View>
+    );
+  };
+
+  const AlternateView = () => {
+    return (
+      <View>
+        <Text>An Alternate View</Text>
+      </View>
+    );
+  };
+
+  useEffect(() => {
+    changeUser();
+  }, []);
+ 
+  const navigationRef = React.useRef(null);
+  return (
+    <DatadogProvider configuration={config}>
+      <NavigationContainer
+        ref={navigationRef}
+        onReady={() => {
+          DdRumReactNavigationTracking.startTrackingViews(
+            navigationRef.current,
+          );
+        }}>
+        <Stack.Navigator initialRouteName="Datadog React Native CLI Sandbox">
+          <Stack.Screen
+            name="Datadog React Native CLI Sandbox"
+            component={HomeScreen}
+            options={{
+              headerStyle: {
+                backgroundColor: '#642ba6',
+              },
+              headerTitleStyle: {
+                color: 'white',
+              },
+            }}
+          />
+          <Stack.Screen
+            name="AlternateView"
+            component={AlternateView}
+            options={{
+              headerTitle: 'Alternative View',
+              headerStyle: {
+                backgroundColor: '#642ba6',
+              },
+              headerTintColor: 'white',
+              headerTitleStyle: {
+                color: 'white',
+              },
+            }}
+          />
+        </Stack.Navigator>
       </NavigationContainer>
     </DatadogProvider>
   );
@@ -229,7 +263,7 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 24,
     fontWeight: '600',
-    color: 'white',
+    color: 'black',
     marginTop: 28,
     marginBottom: 18,
     paddingHorizontal: 24,
