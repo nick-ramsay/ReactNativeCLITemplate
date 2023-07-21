@@ -9,9 +9,12 @@ import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import {
   DdSdkReactNative,
-  /*DdSdkReactNativeConfiguration,*/
   DatadogProviderConfiguration,
   DatadogProvider,
+  DdLogs,
+  ErrorSource,
+  RumActionType,
+  DdRum,
 } from '@datadog/mobile-react-native';
 import type {PropsWithChildren} from 'react';
 import {
@@ -33,6 +36,13 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+
+const datadogLogo = require('./images/dd_logo_v_white.png');
+
+const Stack = createNativeStackNavigator();
 
 //DD RUM Start
 
@@ -81,6 +91,14 @@ function Section({children, title}: SectionProps): JSX.Element {
   );
 }
 
+function HomeScreen() {
+  return (
+    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+      <Text>Home Screen</Text>
+    </View>
+  );
+}
+
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -90,9 +108,7 @@ function App(): JSX.Element {
 
   var [userFirstName, setUserFirstname] = useState('');
   var [userLastName, setUserLastName] = useState('');
-  var [pictureURL, setPictureURL] = useState(
-    'https://reactnative.dev/img/tiny_logo.png',
-  );
+  var [pictureURL, setPictureURL] = useState('');
   var [userEmail, setUserEmail] = useState('');
   var [userId, setUserId] = useState('');
 
@@ -110,11 +126,26 @@ function App(): JSX.Element {
 
       DdSdkReactNative.setUser({
         id: userDataResults.login.uuid,
-        name: userDataResults.name.first + " " + userDataResults.name.last,
+        name: userDataResults.name.first + ' ' + userDataResults.name.last,
         email: userDataResults.email,
         type: 'premium',
       });
     });
+  };
+
+  const changeUserImage = () => {
+    axios({
+      method: 'get',
+      url: 'https://randomuser.me/api/',
+    }).then(response => {
+      let userDataResults = response.data.results[0];
+      setPictureURL(pictureURL => userDataResults.picture.large);
+    });
+  };
+
+  const forceCrash = () => {
+    const test: any = {};
+    console.log(test.should.crash);
   };
 
   useEffect(() => {
@@ -123,44 +154,73 @@ function App(): JSX.Element {
 
   return (
     <DatadogProvider configuration={config}>
-      <SafeAreaView style={backgroundStyle}>
-        <StatusBar
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-          backgroundColor={backgroundStyle.backgroundColor}
-        />
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={backgroundStyle}>
-          <View
-            style={{
-              backgroundColor: isDarkMode ? Colors.black : Colors.white,
-            }}>
-            <View style={{backgroundColor: '#642ba6'}}>
-              <Text style={styles.titleText}>
-                {'Welcome, ' + userFirstName + ' ' + userLastName + '!'}
-              </Text>
-              <Image
-                style={styles.logo}
-                source={{
-                  uri: pictureURL,
-                }}
-              />
-            </View>
+      <NavigationContainer>
+        <SafeAreaView style={backgroundStyle}>
+          <StatusBar
+            barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+            backgroundColor={backgroundStyle.backgroundColor}
+          />
+          <ScrollView
+            contentInsetAdjustmentBehavior="automatic"
+            style={backgroundStyle}>
+            <View
+              style={{
+                backgroundColor: isDarkMode ? Colors.black : Colors.white,
+              }}>
+              <View style={{backgroundColor: '#642ba6'}}>
+                <Text style={styles.titleText}>
+                  {userId !== ''
+                    ? 'Welcome, ' + userFirstName + ' ' + userLastName + '!'
+                    : ''}
+                </Text>
+                <Image
+                  style={styles.logo}
+                  source={
+                    pictureURL !== ''
+                      ? {uri: pictureURL}
+                      : require('./images/dd_logo_v_white.png')
+                  }
+                />
+              </View>
 
-            <View style={styles.container}>
-              <View style={styles.buttonContainer}>
-                <Button title="🔄 Change User 🔄" onPress={changeUser} />
-              </View>
-              <View style={styles.buttonContainer}>
-                <Button title={'⏲️ Apply Custom Timing ⏲️'} />
-              </View>
-              <View style={styles.buttonContainer}>
-                <Button title={'💥 Crash App 💥'} />
+              <View style={styles.container}>
+                <View style={styles.buttonContainer}>
+                  <Button
+                    color="#642ba6"
+                    title="Change User Image"
+                    onPress={changeUserImage}
+                  />
+                </View>
+                <View style={styles.buttonContainer}>
+                  <Button
+                    color="#642ba6"
+                    title={'Apply Custom Timing'}
+                    onPress={() =>
+                      DdRum.addTiming('customTimingBtn_load_timing')
+                    }
+                  />
+                </View>
+                <View style={styles.buttonContainer}>
+                  <Button
+                    color="#642ba6"
+                    title={'Crash App'}
+                    onPress={forceCrash}
+                  />
+                </View>
+                {/*
+                <View style={styles.buttonContainer}>
+                <Button
+                    color="#642ba6"
+                    title={'New Page/View'}
+                    //onPress={forceCrash}
+                  />
+                </View>
+                */}
               </View>
             </View>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
+          </ScrollView>
+        </SafeAreaView>
+      </NavigationContainer>
     </DatadogProvider>
   );
 }
@@ -182,10 +242,11 @@ const styles = StyleSheet.create({
     height: 150,
     alignSelf: 'center',
     marginBottom: 18,
-    borderRadius: 15,
+    borderRadius: 5,
   },
   button: {
     marginBottom: 100,
+    color: '#642ba6',
   },
   container: {
     flex: 1,
@@ -193,6 +254,8 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 30,
+    paddingRight: 15,
+    paddingLeft: 15,
   },
 });
 
