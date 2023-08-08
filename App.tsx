@@ -17,7 +17,10 @@ import {
   DdRum,
 } from '@datadog/mobile-react-native';
 
-import { DdRumReactNavigationTracking, ViewNamePredicate } from '@datadog/mobile-react-navigation';
+import {
+  DdRumReactNavigationTracking,
+  ViewNamePredicate,
+} from '@datadog/mobile-react-navigation';
 import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
@@ -162,7 +165,7 @@ function App(): JSX.Element {
                 source={
                   pictureURL !== ''
                     ? {uri: pictureURL}
-                    : require('./images/dd_logo_v_white.png')
+                    : require('./images/dd_logo_v_rgb.png')
                 }
               />
             </View>
@@ -207,15 +210,22 @@ function App(): JSX.Element {
   const AlternateView = () => {
     return (
       <View>
-        <Text>An Alternate View</Text>
+        <Image
+          style={styles.alternateLogo}
+          source={require('./images/dd_logo_v_rgb.png')}
+        />
       </View>
     );
   };
 
+  let interactive = true;
+
   useEffect(() => {
     changeUser();
-  }, []);
- 
+    if (!interactive) return;
+void DdRum.addTiming('interactive');
+  }, [interactive]);
+
   const navigationRef = React.useRef(null);
   return (
     <DatadogProvider configuration={config}>
@@ -276,7 +286,13 @@ const styles = StyleSheet.create({
     height: 150,
     alignSelf: 'center',
     marginBottom: 18,
-    borderRadius: 5,
+  },
+  alternateLogo: {
+    width: 150,
+    height: 150,
+    alignSelf: 'center',
+    marginTop: 28,
+    marginBottom: 18,
   },
   button: {
     marginBottom: 100,
