@@ -8,7 +8,7 @@ This is a new [**React Native**](https://reactnative.dev) project, bootstrapped 
 
 First, you will need to create a React Native RUM application in Datadog: https://app.datadoghq.com/rum/application/create. Once the application is created, take note of the client token and application ID for the RUM application:
 
-![Datadog RUM Application Config](https://a.cl.ly/4guXp4Bk](https://p-qkfgo2.t2.n0.cdn.getcloudapp.com/items/4guXp4Bk/22425ae3-05ae-4e17-b415-9b4bc90f646c.jpg?source=viewer&v=206e1ad347638e851fd52c3a24a04148 "Test")
+![Datadog RUM Application Config](https://p-qkfgo2.t2.n0.cdn.getcloudapp.com/items/4guXp4Bk/22425ae3-05ae-4e17-b415-9b4bc90f646c.jpg)
 
 Once you've done this, create a ```.env``` file in the root directory of your repo. Within this root directory, add your client token and application ID as seen below:
 ```
