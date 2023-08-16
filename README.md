@@ -62,16 +62,11 @@ This is one way to run your app — you can also run it directly from within And
 
 ## Step 4: Modifying your App
 
-Now that you have successfully run the app, let's modify it.
-
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
-
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+You should now have successfully run your app in Android and/or iOS. If you're interested in making any modifications to the app, these can be made in the `App.tsx` file in your text editor of choice.
 
 ## Congratulations! :tada:
 
-You've successfully run and modified your React Native App. :partying_face:
+You've successfully run your React Native App and know where to make modifications! :partying_face:
 
 ### Now what?
 
