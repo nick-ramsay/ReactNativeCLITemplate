@@ -5,6 +5,8 @@
  * @format
  */
 
+
+
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import {
@@ -45,12 +47,18 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+import {DD_RUM_CLIENT_TOKEN, DD_RUM_APPLICATION_ID} from "@env";
+
+console.log(DD_RUM_CLIENT_TOKEN);
+console.log(DD_RUM_APPLICATION_ID);
+
+
 //DD RUM Start
 
 const config = new DatadogProviderConfiguration(
-  'pubb070fc8793aa735278123518c9631aa1',
+  DD_RUM_CLIENT_TOKEN,
   'staging',
-  'd30031bf-5df2-4fd1-a9bc-cf5202ccd7be',
+  DD_RUM_APPLICATION_ID,
   true, // track User interactions (e.g.: Tap on buttons. You can use 'accessibilityLabel' element property to give tap action the name, otherwise element type will be reported)
   true, // track XHR Resources
   true, // track Errors
@@ -143,6 +151,14 @@ function App(): JSX.Element {
     console.log(test.should.crash);
   };
 
+  const createLoggerErrorLog = () => {
+    DdLogs.error("Unknown error - DdLogs");
+  }
+
+  const createConsoleErrorLog = () => {
+    console.error("Unknown error - console");
+  }
+
   const HomeScreen = ({navigation}: {navigation: any}) => {
     return (
       <View>
@@ -189,6 +205,20 @@ function App(): JSX.Element {
                   color="#642ba6"
                   title={'Crash App'}
                   onPress={forceCrash}
+                />
+              </View>
+              <View style={styles.buttonContainer}>
+                <Button
+                  color="#642ba6"
+                  title={'Create Logger Error Log'}
+                  onPress={createLoggerErrorLog}
+                />
+              </View>
+                 <View style={styles.buttonContainer}>
+                <Button
+                  color="#642ba6"
+                  title={'Create Console Error Log'}
+                  onPress={createConsoleErrorLog}
                 />
               </View>
               {
@@ -303,7 +333,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   buttonContainer: {
-    marginTop: 30,
+    marginTop: 15,
     paddingRight: 15,
     paddingLeft: 15,
   },
