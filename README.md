@@ -4,7 +4,7 @@ This is a new [**React Native**](https://reactnative.dev) project, bootstrapped 
 
 >**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
 
-## Step 1 - Datadog RUM: Add RUM Client Token and Application ID to a ```.env``` File
+## Step 1: Datadog RUM - Add RUM Client Token and Application ID to a ```.env``` File
 
 First, you will need to create a React Native RUM application in Datadog: https://app.datadoghq.com/rum/application/create. Once the application is created, take note of the client token and application ID for the RUM application:
 
