@@ -10,7 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@datadog/mobile-react-native": "^1.8.1",
+    "@datadog/mobile-react-native": "^1.8.2",
     "@datadog/mobile-react-navigation": "^1.8.1",
     "@react-navigation/native": "^6.1.7",
     "@react-navigation/native-stack": "^6.9.13",

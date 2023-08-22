@@ -1,13 +1,13 @@
 PODS:
   - boost (1.76.0)
   - CocoaAsyncSocket (7.6.5)
-  - DatadogSDK (1.20.0)
-  - DatadogSDKCrashReporting (1.20.0):
-    - DatadogSDK (= 1.20.0)
+  - DatadogSDK (1.22.0)
+  - DatadogSDKCrashReporting (1.22.0):
+    - DatadogSDK (= 1.22.0)
     - PLCrashReporter (~> 1.11.0)
-  - DatadogSDKReactNative (1.8.1):
-    - DatadogSDK (~> 1.20.0)
-    - DatadogSDKCrashReporting (~> 1.20.0)
+  - DatadogSDKReactNative (1.8.2):
+    - DatadogSDK (~> 1.22.0)
+    - DatadogSDKCrashReporting (~> 1.22.0)
     - React-Core
   - DoubleConversion (1.1.6)
   - FBLazyVector (0.72.3)
@@ -496,7 +496,7 @@ PODS:
     - React-jsi (= 0.72.3)
     - React-logger (= 0.72.3)
     - React-perflogger (= 0.72.3)
-  - RNScreens (3.22.1):
+  - RNScreens (3.24.0):
     - React-Core
     - React-RCTImage
   - SocketRocket (0.6.1)
@@ -682,9 +682,9 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   boost: 57d2868c099736d80fcd648bf211b4431e51a558
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
-  DatadogSDK: a89bfe6b833c5f4069c36a5a1096947ff148e89a
-  DatadogSDKCrashReporting: 9f8ea80a58a68d165568e74a5b9d3d04bcff9563
-  DatadogSDKReactNative: af54bda1c8ff1a3d9a3744fab44fcb0ead513062
+  DatadogSDK: 46e1a7363bc3130fae151ec4aedf11ea291517c5
+  DatadogSDKCrashReporting: 24a0e6ec6db905cdeb174721962a7941b2f8a9d2
+  DatadogSDKReactNative: d4372ad5eb31c6516f9ef43162ab715024b8db7d
   DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
   FBLazyVector: 4cce221dd782d3ff7c4172167bba09d58af67ccb
   FBReactNativeSpec: c6bd9e179757b3c0ecf815864fae8032377903ef
@@ -735,7 +735,7 @@ SPEC CHECKSUMS:
   React-runtimescheduler: 837c1bebd2f84572db17698cd702ceaf585b0d9a
   React-utils: bcb57da67eec2711f8b353f6e3d33bd8e4b2efa3
   ReactCommon: 3ccb8fb14e6b3277e38c73b0ff5e4a1b8db017a9
-  RNScreens: 50ffe2fa2342eabb2d0afbe19f7c1af286bc7fb3
+  RNScreens: b21dc57dfa2b710c30ec600786a3fc223b1b92e7
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: 8796b55dba14d7004f980b54bcc9833ee45b28ce
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
