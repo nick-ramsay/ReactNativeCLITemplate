@@ -17,6 +17,7 @@ import {
   ErrorSource,
   RumActionType,
   DdRum,
+  SdkVerbosity,
 } from '@datadog/mobile-react-native';
 
 import {
@@ -69,6 +70,8 @@ config.site = 'US1';
 config.nativeCrashReportEnabled = true;
 // Optional: sample RUM sessions (here, 80% of session will be sent to Datadog. Default = 100%)
 config.sessionSamplingRate = 80;
+//Optional: set the verbosity of logs you would like to see output from the Datadog RUM SDK
+//config.verbosity = SdkVerbosity.DEBUG
 
 //DD RUM End
 
