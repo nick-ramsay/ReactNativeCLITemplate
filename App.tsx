@@ -50,13 +50,14 @@ import {
 
 import {DD_RUM_CLIENT_TOKEN, DD_RUM_APPLICATION_ID} from "@env";
 
-console.log(DD_RUM_CLIENT_TOKEN);
+//console.log(process.env.DD_RUM_CLIENT_TOKEN)
+console.log("Token: " + DD_RUM_CLIENT_TOKEN);
 console.log(DD_RUM_APPLICATION_ID);
 
 
 //DD RUM Start
 
-const config = new DatadogProviderConfiguration(
+const ddconfig = new DatadogProviderConfiguration(
   DD_RUM_CLIENT_TOKEN,
   'staging',
   DD_RUM_APPLICATION_ID,
@@ -65,19 +66,30 @@ const config = new DatadogProviderConfiguration(
   true, // track Errors
 );
 // Optional: Select your Datadog website (one of "US", "EU" or "GOV")
-config.site = 'US1';
+ddconfig.site = 'US1';
 // Optional: enable or disable native crash reports
-config.nativeCrashReportEnabled = true;
+ddconfig.nativeCrashReportEnabled = true;
 // Optional: sample RUM sessions (here, 80% of session will be sent to Datadog. Default = 100%)
-config.sessionSamplingRate = 80;
+ddconfig.sessionSamplingRate = 100;
+ddconfig.resourceTracingSamplingRate = 100;
+ddconfig.verbosity = SdkVerbosity.DEBUG
 //Optional: set the verbosity of logs you would like to see output from the Datadog RUM SDK
 //config.verbosity = SdkVerbosity.DEBUG
+
+/*config.logEventMapper = (event) => {
+  console.log(event.message)
+} //<-- Can be used to remap RUM event and log data or drop events/logs
+*/
+
+ddconfig.firstPartyHosts = ["https://randomuser.me/api/"];
 
 //DD RUM End
 
 type SectionProps = PropsWithChildren<{
   title: string;
 }>;
+
+
 
 function Section({children, title}: SectionProps): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -261,7 +273,8 @@ void DdRum.addTiming('interactive');
 
   const navigationRef = React.useRef(null);
   return (
-    <DatadogProvider configuration={config}>
+
+    <DatadogProvider configuration={ddconfig}>
       <NavigationContainer
         ref={navigationRef}
         onReady={() => {
